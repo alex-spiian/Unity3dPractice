@@ -1,2 +1,1 @@
-# Drum Rotation by Motor
-![]()
+
