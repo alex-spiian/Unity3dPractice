@@ -24,7 +24,7 @@ public class GameController : MonoBehaviour
             ActionsWithDoors(ray);
         }
         
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             ThrowItemForward();
         }
