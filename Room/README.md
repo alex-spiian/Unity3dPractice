@@ -6,7 +6,7 @@
 - Script "GameController"
    - Highlighting of an item which player looks at;
    - Opportunity to pick up an item which player looks at and which is highleted by button "E";
-   - If player trys to pick up an item and they already have one in "holder", previous item drops on the ground;
+   - If player trys to pick up an item and they already have one in "holder", previous item will be dropped on the ground;
    - Opportunity to throw an item which player holds in "holder" forward by left mouse button;
    - Opportunity to open doors by button "E";
      
