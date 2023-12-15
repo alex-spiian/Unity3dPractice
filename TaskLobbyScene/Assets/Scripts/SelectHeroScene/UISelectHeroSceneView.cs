@@ -1,10 +1,10 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UISelectHeroSceneView : MonoBehaviour
 {
+    
     [SerializeField] private Slider _healthValue;
     [SerializeField] private Slider  _attackValue;
     [SerializeField] private Slider _defenceValue;
@@ -13,77 +13,51 @@ public class UISelectHeroSceneView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _heroNameLabel;
     [SerializeField] private TextMeshProUGUI _heroWeaponLabel;
     [SerializeField] private TextMeshProUGUI _heroPriceLabel;
-    [SerializeField] private TextMeshProUGUI _goldValueLabel;
-    [SerializeField] private TextMeshProUGUI _gemesValueLabel;
+
     [SerializeField] private TextMeshProUGUI _heroExperienceLabel;
     [SerializeField] private TextMeshProUGUI _heroLevelLabel;
+
+    [SerializeField] private Image _heroTypeImage;
     
     [SerializeField] private Button _buyHeroButton;
     [SerializeField] private Button _selectHeroButton;
+    
+    
+    public void UpdateHeroInformation()
+    {
+        var currentHero = GameController.Instance.GetCurrentHero;
+        
+        _heroNameLabel.text = currentHero.Name;
+        _heroWeaponLabel.text = currentHero.Weapon;
+        _heroTypeImage.sprite = currentHero.HeroTypeIcon;
+        _heroLevelLabel.text = currentHero.Level.ToString();
+        _heroPriceLabel.text = currentHero.Price.ToString();
 
-    public void SetHeroName(string name)
-    {
-        _heroNameLabel.text = name;
+        _healthValue.value = currentHero.Health;
+        _attackValue.value = currentHero.Attack;
+        _defenceValue.value = currentHero.Defence;
+        _speedValue.value = currentHero.Speed;
+        _heroExperienceLabel.text = $"{currentHero.CurrentExperienceValue}/{currentHero.MaxExperienceValue}";
+        
     }
     
-    public void SetHeroWeapon(string weapon)
+    public void ChangeStateOfButtonsBuyAndSelect()
     {
-        _heroWeaponLabel.text = weapon;
-    }
 
-    public void SetHeroLevel(float level)
-    {
-        _heroLevelLabel.text = level.ToString();
-    }
-    
-    public void SetHealthValue(float healthValue)
-    {
-        _healthValue.value = healthValue;
-    }
-    
-    public void SetAttackValue(float attackValue)
-    {
-        _attackValue.value = attackValue;
-    }
-    
-    public void SetDefenceValue(float defenceValue)
-    {
-        _defenceValue.value = defenceValue;
-    }
-    
-    public void SetSpeedValue(float speedValue)
-    {
-        _speedValue.value = speedValue;
-    }
+        var currentHero = GameController.Instance.GetCurrentHero;
 
-    public void SetHeroesPrice(string priceValue)
-    {
-        _heroPriceLabel.text = priceValue;
-    }
-
-    public void ChangeStateOfButtonsBuyAndSelect(bool canSelectHero)
-    {
-        if (!canSelectHero)
+        if (!GameController.Instance.IsCurrentHeroBought(currentHero))
         {
+            
             _buyHeroButton.gameObject.SetActive(true);
             _selectHeroButton.interactable = false;
         }
         else
         {
+
             _buyHeroButton.gameObject.SetActive(false);
             _selectHeroButton.interactable = true;
         }
-    }
-
-    public void UpdateMoneyValue()
-    {
-        _goldValueLabel.text = GameController.Instance.GetPlayersGoldValue().ToString("N0");
-        _gemesValueLabel.text = GameController.Instance.GetPlayersGemsValue().ToString("N0");
-    }
-    
-    public void SetHeroExperience(Hero hero)
-    {
-        _heroExperienceLabel.text = $"{hero.GetExperienceValue()}/{100}";
     }
     
 }

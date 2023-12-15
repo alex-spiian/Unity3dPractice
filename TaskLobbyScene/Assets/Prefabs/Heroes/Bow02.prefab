@@ -11003,7 +11003,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90b4a6b6c63054794b802d53f3a09f47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HeroPrefab: {fileID: 1911315358635904}
   _name: Bow02
   _weapon: Bow hero
   _health: 37
@@ -11011,9 +11010,10 @@ MonoBehaviour:
   _defence: 16
   _speed: 23
   _price: 3000
-  _maxValueOfExperience: 100
-  _currentValueOfExperience: 42
+  _currentExperienceValue: 37
+  _maxExperienceValue: 100
   _level: 3
+  _heroTypeIcon: {fileID: 21300000, guid: cba6fba15682e49cdab63583abb7be7c, type: 3}
 --- !u!1 &1920731997030702
 GameObject:
   m_ObjectHideFlags: 0

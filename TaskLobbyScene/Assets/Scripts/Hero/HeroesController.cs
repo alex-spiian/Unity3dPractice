@@ -6,9 +6,9 @@ using UnityEngine;
 public class HeroesController
 {
     [SerializeField] private GameObject[] _heroesPrefabs;
-    
-    private List<Hero> _heroesWithStats = new List<Hero>();
 
+    private List<Hero> _heroesWithStats = new List<Hero>();
+    
     public void InitializeHeroesStats()
     {
 
@@ -18,21 +18,20 @@ public class HeroesController
         {
             _heroesWithStats.Add(_heroesPrefabs[i].GetComponent<Hero>());
 
-            _heroesWithStats[i].SetPrefabValue(_heroesPrefabs[i]);
+            _heroesWithStats[i].HeroPrefab = _heroesPrefabs[i];
 
         }
-
+        
     }
 
-    public Hero GetHero(int indexOfHero)
+    public Hero GetCurrentHero(int heroIndex)
     {
-        return _heroesWithStats[indexOfHero];
+        return _heroesWithStats[heroIndex];
     }
 
     public int GetHeroesCount()
     {
         return _heroesWithStats.Count;
     }
-    
-    
+
 }

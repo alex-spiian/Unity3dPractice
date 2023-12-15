@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 
 namespace DefaultNamespace.SceneController
 {
-    [Serializable]
     public class SceneController : MonoBehaviour
     {
         public void LoadLobbyScene()

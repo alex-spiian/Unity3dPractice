@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+
     public int CurrentHeroIndex;
-    public int HeroesCount;
+    public int LastSelectedHeroIndex;
+
+    public PlayerController GetPlayerController => _playerController;
+    public float GetPlayersGoldValue => _playerController.GetGoldValue;
+    public float GetPlayersGemsValue => _playerController.GetGemsValue;
+    public Hero GetCurrentHero => _heroesController.GetCurrentHero(CurrentHeroIndex);
+    public int GetHeroesCount => _heroesController.GetHeroesCount();
+    
     
     [SerializeField]
     private HeroesController _heroesController;
@@ -13,9 +21,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private PlayerController _playerController;
 
-    [SerializeField]
-    private SceneController _sceneController;
-    
+    [SerializeField] private string _firstFreeHeroName;
+
     private static GameController _instance;
     public static GameController Instance
     {
@@ -41,12 +48,14 @@ public class GameController : MonoBehaviour
         }
     }
     
+    public bool IsCurrentHeroBought(Hero hero) => _playerController.IsHeroBought(hero.Name);
+
     private void Awake()
     {
         _heroesController.InitializeHeroesStats();
-        _playerController.AddHeroNameInBoughtList(GlobalConstants.FIRST_FREE_HERO_NAME);
         
-        HeroesCount = _heroesController.GetHeroesCount();
+        _playerController.AddHeroNameInBoughtList(_firstFreeHeroName);
+        
         
         if (_instance != null && _instance != this)
         {
@@ -57,62 +66,5 @@ public class GameController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         
     }
-
-    public float GetPlayersGoldValue()
-    {
-        return _playerController.GetGoldValue();
-    }
-    
-    public float GetPlayersGemsValue()
-    {
-        return _playerController.GetGemsValue();
-    }
-
-    public bool HasPlayerEnoughGold(float price)
-    {
-        return _playerController.HaveEnoughGold(price);
-    }
-    
-    public bool HasPlayerEnoughGems(float price)
-    {
-        return _playerController.HaveEnoughGems(price);
-    }
-
-    public void TakeAwayGoldAmountInPlayer(float price)
-    {
-        _playerController.TakeAwayGoldAmount(price);
-    }
-    
-    public void TakeAwayGemsAmountInPlayer(float price)
-    {
-        _playerController.TakeAwayGemsAmount(price);
-    }
-
-    public Hero GetCurrentHero()
-    {
-        return _heroesController.GetHero(CurrentHeroIndex);
-    }
-    
-    
-    public void AddHeroNameInBoughtList(string heroName)
-    {
-        _playerController.AddHeroNameInBoughtList(heroName);
-    }
-
-    public bool IsHeroBought(string heroName)
-    {
-        return _playerController.IsHeroBought(heroName);
-    }
-
-    public void LoadLobbyScene()
-    {
-        _sceneController.LoadLobbyScene();
-    }
-
-    public void LoadSelectHeroScene()
-    {
-        _sceneController.LoadSelectHeroScene();
-    }
-    
     
 }

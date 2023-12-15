@@ -1,126 +1,64 @@
+using System;
 using DefaultNamespace;
+using DefaultNamespace.Hero;
+using DefaultNamespace.SceneController;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SelectHeroSceneController : MonoBehaviour
 {
-    [SerializeField]
-    private UISelectHeroSceneView _uiSelectHeroSceneView;
-    
-    [SerializeField]
-    private Vector3 _spawnPoint = new Vector3(0f, -2.2f, 0f);
-    
-    private GameObject _currentHero;
+
+    [SerializeField] private UISelectHeroSceneView _uiSelectHeroSceneView;
+
+    [SerializeField] private HeroSwitcher _heroSwitcher;
+    [SerializeField] private SceneController _sceneController;
+    [SerializeField] private MoneyView _moneyView;
+
+    private PlayerController _playerController;
 
     private void Awake()
     {
-        var currentHeroPrefab = GameController.Instance.GetCurrentHero().GetPrefabValue();
+        _playerController = GameController.Instance.GetPlayerController;
         
-        _currentHero = Instantiate(currentHeroPrefab);
-        _currentHero.transform.position = _spawnPoint;
+        _heroSwitcher.OnHeroChanged += _uiSelectHeroSceneView.UpdateHeroInformation;
+        _heroSwitcher.OnHeroChanged += _uiSelectHeroSceneView.ChangeStateOfButtonsBuyAndSelect;
         
-        UpdateHeroStats();
-        UpdateHeroInformation();
-        SetButtonsBuyAndSelectInRightState();
-        
-        _uiSelectHeroSceneView.UpdateMoneyValue();
+        _playerController.OnHeroBought += _moneyView.UpdateMoneyView;
+        _playerController.OnHeroBought += _uiSelectHeroSceneView.ChangeStateOfButtonsBuyAndSelect;
+
+        _uiSelectHeroSceneView.UpdateHeroInformation();
+        _uiSelectHeroSceneView.ChangeStateOfButtonsBuyAndSelect();
+        _moneyView.UpdateMoneyView();
 
     }
 
-    public void NextHero()
+    private void OnDisable()
     {
-        var availableHeroesCount = GameController.Instance.HeroesCount;
+        _heroSwitcher.OnHeroChanged -= _uiSelectHeroSceneView.UpdateHeroInformation;
+        _heroSwitcher.OnHeroChanged -= _uiSelectHeroSceneView.ChangeStateOfButtonsBuyAndSelect;
         
-        if (GameController.Instance.CurrentHeroIndex + 1 >= availableHeroesCount) return;
+        _playerController.OnHeroBought -= _moneyView.UpdateMoneyView;
+        _playerController.OnHeroBought -= _uiSelectHeroSceneView.ChangeStateOfButtonsBuyAndSelect;
         
-        Destroy(_currentHero);
-        
-        GameController.Instance.CurrentHeroIndex++;
-        var currentHeroPrefab = GameController.Instance.GetCurrentHero().GetPrefabValue();
-        
-        _currentHero = Instantiate(currentHeroPrefab);
-        _currentHero.transform.position = _spawnPoint;
-        
-        UpdateHeroStats();
-        UpdateHeroInformation();
-        SetButtonsBuyAndSelectInRightState();
-
     }
-
-    public void PreviousHero()
-    {
-        if (GameController.Instance.CurrentHeroIndex <= 0) return;
-        
-        Destroy(_currentHero);
-
-        GameController.Instance.CurrentHeroIndex--;
-        var currentHeroPrefab = GameController.Instance.GetCurrentHero().GetPrefabValue();
-        
-        _currentHero = Instantiate(currentHeroPrefab);
-        _currentHero.transform.position = _spawnPoint;
-
-        UpdateHeroStats();
-        UpdateHeroInformation();
-        SetButtonsBuyAndSelectInRightState();
-    }
-
-    private void SetButtonsBuyAndSelectInRightState()
-    {
-        if (GameController.Instance.IsHeroBought(GameController.Instance.GetCurrentHero().GetHeroesName()))
-        {
-            _uiSelectHeroSceneView.ChangeStateOfButtonsBuyAndSelect(true);
-        }
-        else
-        {
-            _uiSelectHeroSceneView.ChangeStateOfButtonsBuyAndSelect(false);
-        }
-    }
-
-    private void UpdateHeroStats()
-    {
-        var currentHero = GameController.Instance.GetCurrentHero();
-        
-        _uiSelectHeroSceneView.SetAttackValue(currentHero.GetAttackValue());
-        _uiSelectHeroSceneView.SetDefenceValue(currentHero.GetDefenceValue());
-        _uiSelectHeroSceneView.SetHealthValue(currentHero.GetHealthValue());
-        _uiSelectHeroSceneView.SetSpeedValue(currentHero.GetSpeedValue());
-        _uiSelectHeroSceneView.SetHeroesPrice(currentHero.GetHeroesPrice().ToString());
-    }
-
-    private void UpdateHeroInformation()
-    {
-        var currentHero = GameController.Instance.GetCurrentHero();
-
-        _uiSelectHeroSceneView.SetHeroName(currentHero.GetHeroesName());
-        _uiSelectHeroSceneView.SetHeroLevel(currentHero.GetHeroLevel());
-        _uiSelectHeroSceneView.SetHeroWeapon(currentHero.GetHeroWeapon());
-        _uiSelectHeroSceneView.SetHeroExperience(currentHero);
-    }
+    
     
     public void BuyHero()
     {
-        var currentHero = GameController.Instance.GetCurrentHero();
-        
-        if (GameController.Instance.HasPlayerEnoughGold(currentHero.GetHeroesPrice()))
-        {
-            GameController.Instance.TakeAwayGoldAmountInPlayer(currentHero.GetHeroesPrice());
-            GameController.Instance.AddHeroNameInBoughtList(currentHero.GetHeroesName());
-            
-            SetButtonsBuyAndSelectInRightState();
-            
-            _uiSelectHeroSceneView.UpdateMoneyValue();
-        }
+        var currentHero = GameController.Instance.GetCurrentHero;
+        _playerController.TryBuyHero(currentHero);
         
     }
     
     public void SelectHero()
     {
-        GameController.Instance.LoadLobbyScene();
+        GameController.Instance.LastSelectedHeroIndex = GameController.Instance.CurrentHeroIndex;
+        _sceneController.LoadLobbyScene();
     }
 
     public void BackToLobbyScene()
     {
-        GameController.Instance.LoadLobbyScene();
+        GameController.Instance.CurrentHeroIndex = GameController.Instance.LastSelectedHeroIndex;
+        _sceneController.LoadLobbyScene();
     }
 
   

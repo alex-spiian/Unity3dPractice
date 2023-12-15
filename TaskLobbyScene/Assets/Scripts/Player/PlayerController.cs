@@ -1,47 +1,25 @@
 using System;
 using System.Collections.Generic;
+using DefaultNamespace;
 using UnityEngine;
 
 [Serializable]
 public class PlayerController
 {
-    [SerializeField]
-    private float _goldValue;
+    
+    public event Action OnHeroBought;
+    
+    public Wallet Wallet;
 
-    [SerializeField]
-    private float _gemsValue;
-
+    public float GetGoldValue => Wallet.GoldAmount;
+    public float GetGemsValue => Wallet.GemsAmount;
+    
     private List<string> _boughtHeroesNames = new List<string>();
-    
-    public float GetGoldValue()
-    {
-        return _goldValue;
-    }
 
-    public float GetGemsValue()
-    {
-        return _gemsValue;
-    }
-    public void TakeAwayGoldAmount(float price)
-    {
-        _goldValue -= price;
-    }
-    
-    public void TakeAwayGemsAmount(float price)
-    {
-        _gemsValue -= price;
-    }
-    
 
-    public bool HaveEnoughGold(float price)
-    {
-        return _goldValue >= price;
-    }
-    
-    public bool HaveEnoughGems(float price)
-    {
-        return _gemsValue >= price;
-    }
+    public bool HaveEnoughGold(float price) => Wallet.GoldAmount >= price;
+
+    public bool HaveEnoughGems(float price) => Wallet.GemsAmount >= price;
 
     public void AddHeroNameInBoughtList(string heroName)
     {
@@ -54,6 +32,16 @@ public class PlayerController
     public bool IsHeroBought(string heroName)
     {
         return _boughtHeroesNames.Contains(heroName);
+    }
+
+    public void TryBuyHero(Hero hero)
+    {
+        if (!HaveEnoughGold(hero.Price)) return;
+        
+        Wallet.SpendGold(hero.Price);
+        AddHeroNameInBoughtList(hero.Name);
+        
+        OnHeroBought?.Invoke();
     }
     
 }

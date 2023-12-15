@@ -1,32 +1,39 @@
 using DefaultNamespace;
+using DefaultNamespace.SceneController;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LobbySceneController : MonoBehaviour
 {
-    [SerializeField]
-    private Vector3 _spawnPoint = new Vector3(0f, -0.92f, 0f);
-
+    [SerializeField] private Vector3 _spawnPoint;
+    
+    [SerializeField] private UILobbySceneView _uiLobbySceneView;
+    [SerializeField] private MoneyView _moneyView;
+    
+    [SerializeField] private SceneController _sceneController;
+    
     private void Awake()
     {
+        
         InstantiateHero();
+        _moneyView.UpdateMoneyView();
+        _uiLobbySceneView.UpdateHeroInformation(GameController.Instance.GetCurrentHero);
+        
     }
 
     private void InstantiateHero()
     {
-        var currentHeroPrefab = GameController.Instance.GetCurrentHero().GetPrefabValue();
-        
-        var hero = Instantiate(currentHeroPrefab);
 
-        hero.transform.position = _spawnPoint;
+        var currentHero = GameController.Instance.GetCurrentHero;
+
+        Instantiate(currentHero.HeroPrefab).transform.position = _spawnPoint;
+
 
     }
 
     public void ChangeHero()
     {
-        GameController.Instance.LoadSelectHeroScene();
-
+        _sceneController.LoadSelectHeroScene();
     }
-
+    
     
 }
