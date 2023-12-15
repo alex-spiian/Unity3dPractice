@@ -9,17 +9,17 @@ public class PlayerController
     
     public event Action OnHeroBought;
     
-    public Wallet Wallet;
+    private Wallet _wallet;
 
-    public float GetGoldValue => Wallet.GoldAmount;
-    public float GetGemsValue => Wallet.GemsAmount;
+    public float GetGoldValue => _wallet.GoldAmount;
+    public float GetGemsValue => _wallet.GemsAmount;
     
     private List<string> _boughtHeroesNames = new List<string>();
 
 
-    public bool HaveEnoughGold(float price) => Wallet.GoldAmount >= price;
+    public bool HaveEnoughGold(float price) => _wallet.GoldAmount >= price;
 
-    public bool HaveEnoughGems(float price) => Wallet.GemsAmount >= price;
+    public bool HaveEnoughGems(float price) => _wallet.GemsAmount >= price;
 
     public void AddHeroNameInBoughtList(string heroName)
     {
@@ -38,7 +38,7 @@ public class PlayerController
     {
         if (!HaveEnoughGold(hero.Price)) return;
         
-        Wallet.SpendGold(hero.Price);
+        _wallet.SpendGold(hero.Price);
         AddHeroNameInBoughtList(hero.Name);
         
         OnHeroBought?.Invoke();
