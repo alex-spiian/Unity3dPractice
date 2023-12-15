@@ -9,13 +9,11 @@ public class PlayerController
     
     public event Action OnHeroBought;
     
-    private Wallet _wallet;
-
     public float GetGoldValue => _wallet.GoldAmount;
     public float GetGemsValue => _wallet.GemsAmount;
     
     private List<string> _boughtHeroesNames = new List<string>();
-
+    private Wallet _wallet;
 
     public bool HaveEnoughGold(float price) => _wallet.GoldAmount >= price;
 
