@@ -5,7 +5,6 @@ using UnityEngine;
 [Serializable]
 public class MovementController
 {
-    
     public bool IsRopeAtFinish;
     
     [SerializeField]
